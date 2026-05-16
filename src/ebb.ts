@@ -180,12 +180,16 @@ export class EBB {
 
   /** Send a raw command to the EBB and expect a single "OK" line in return. */
   public async command(cmd: EBBCommand): Promise<void> {
+    // Stock EBB firmware replies "OK". NextDraw firmware (v3.x) instead echoes
+    // the command verb (e.g. "SR" for "SR,...", "S2" for "S2,..."). Accept
+    // either as success; errors are still surfaced via the "!" prefix.
+    const verb = cmd.split(",", 1)[0];
     try {
       return await this.run(function* (): Iterator<void, void, string> {
         this.write(`${cmd}\r`);
-        const ok = yield;
-        if (ok !== "OK") {
-          throw new Error(`Expected OK, got ${ok}`);
+        const resp = yield;
+        if (resp !== "OK" && resp !== verb) {
+          throw new Error(`Expected OK or ${verb}, got ${resp}`);
         }
       });
     } catch (err) {
