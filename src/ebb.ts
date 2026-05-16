@@ -48,7 +48,7 @@ function modf(d: number): [number, number] {
   return [fracPart, intPart];
 }
 
-export type Hardware = "v3" | "brushless" | "nextdraw-2234";
+export type Hardware = "v3" | "brushless" | "nextdraw-1117" | "nextdraw-2234";
 
 type CommandGenerator<TReturn = unknown> = Iterator<unknown, TReturn, string> & {
   resolve: (value: TReturn) => void;

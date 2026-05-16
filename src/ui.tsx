@@ -300,6 +300,7 @@ function HardwareOptions({ state, driver }: { state: State; driver: BaseDriver |
         >
           <option value="v3">AxiDraw V3</option>
           <option value="brushless">AxiDraw V3 Brushless</option>
+          <option value="nextdraw-1117">NextDraw 1117</option>
           <option value="nextdraw-2234">NextDraw 2234</option>
         </select>
       </label>

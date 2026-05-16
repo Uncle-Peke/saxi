@@ -97,6 +97,7 @@ interface ToolingProfile {
 
 export const Device = (hardware = "v3"): Device => {
   if (hardware === "brushless") return AxidrawBrushless;
+  if (hardware === "nextdraw-1117") return NextDraw1117;
   if (hardware === "nextdraw-2234") return NextDraw2234;
   return Axidraw;
 };
@@ -129,6 +130,19 @@ const AxidrawBrushless: Device = {
 
   penServoMin: 5400, // pen down
   penServoMax: 12600, // pen up
+
+  penPctToPos(pct: number): number {
+    const t = pct / 100.0;
+    return Math.round(this.penServoMin * t + this.penServoMax * (1 - t));
+  },
+};
+
+// NextDraw 1117 with brushless motor that requires 70%+ values
+const NextDraw1117: Device = {
+  stepsPerMm: 5,
+
+  penServoMin: 19600, // pen down - 70% of range
+  penServoMax: 28000, // pen up - full range
 
   penPctToPos(pct: number): number {
     const t = pct / 100.0;
@@ -179,6 +193,23 @@ export const AxidrawBrushlessFast: ToolingProfile = {
   },
   penUpPos: AxidrawBrushless.penPctToPos(50),
   penDownPos: AxidrawBrushless.penPctToPos(60),
+  penDropDuration: 0.08,
+  penLiftDuration: 0.08,
+};
+
+export const NextDraw1117Fast: ToolingProfile = {
+  penDownProfile: {
+    acceleration: 200 * NextDraw1117.stepsPerMm,
+    maximumVelocity: 50 * NextDraw1117.stepsPerMm,
+    corneringFactor: 0.127 * NextDraw1117.stepsPerMm,
+  },
+  penUpProfile: {
+    acceleration: 400 * NextDraw1117.stepsPerMm,
+    maximumVelocity: 200 * NextDraw1117.stepsPerMm,
+    corneringFactor: 0,
+  },
+  penUpPos: NextDraw1117.penPctToPos(50),
+  penDownPos: NextDraw1117.penPctToPos(60),
   penDropDuration: 0.08,
   penLiftDuration: 0.08,
 };
